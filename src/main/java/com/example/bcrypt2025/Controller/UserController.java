@@ -4,14 +4,12 @@ package com.example.bcrypt2025.Controller;
 import com.example.bcrypt2025.Model.User;
 
 import com.example.bcrypt2025.Service.UserService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,9 +19,7 @@ import java.util.Optional;
 public class UserController {
 
 
-
     @Autowired
-
     private UserService userService;
 
 
@@ -35,16 +31,41 @@ public class UserController {
 
 
     @PostMapping
-
     public void getAll(@RequestBody User user)
     {
-        userService.saveOrUpdate(user);
+        userService.save(user);
     }
+
+
+    @PutMapping("/{idUsuario}")
+    public ResponseEntity<?> updateUser(@PathVariable("idUsuario") int idUsuario, @RequestBody User user) {
+        user.setIdUsuario(idUsuario); // Asegura que el ID esté bien asignado
+        userService.Update(user);
+        return ResponseEntity.ok("Usuario actualizado");
+    }
+
+
 
     @DeleteMapping("/{idUsuario}")
     public void saveOrUpdate(@PathVariable("idUsuario")int idUsuario)
     {
         userService.delete(idUsuario);
     }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody User user) {
+        boolean valid = userService.login(user.getIdUsuario(), user.getContraseniaUsuario());
+        if (valid) {
+            return ResponseEntity.ok("Login correcto");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login incorrecto");
+        }
+    }
+
+
+
+
+
 
 }
