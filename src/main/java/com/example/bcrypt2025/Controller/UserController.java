@@ -2,42 +2,49 @@ package com.example.bcrypt2025.Controller;
 
 
 import com.example.bcrypt2025.Model.User;
-import com.example.bcrypt2025.Service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
+import com.example.bcrypt2025.Service.UserService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/usuarios")
 public class UserController {
 
-    @Autowired
-    private UserService service;
 
-    @PostMapping("/login")
-    public boolean login(@RequestBody User user) {
-        return service.login(user.getUserId(), user.getPassword());
+
+    @Autowired
+
+    private UserService userService;
+
+
+
+    @GetMapping("/{idUsuario}")
+    public Optional<User> getById(@PathVariable("idUsuario") int idUsuario) {
+        return userService.getUser(idUsuario);
     }
+
 
     @PostMapping
-    public User register(@RequestBody User user) {
-        return service.register(user);
+
+    public void getAll(@RequestBody User user)
+    {
+        userService.saveOrUpdate(user);
     }
 
-    @GetMapping("/{id}")
-    public Optional<User> getUser(@PathVariable("id") int userId) {
-        return service.findById(userId);
-    }
-
-    @PutMapping
-    public User update(@RequestBody User user) {
-        return service.update(user);
-    }
-
-    @DeleteMapping("/{id}")
-    public boolean delete(@PathVariable("id") int userId) {
-        return service.delete(userId);
+    @DeleteMapping("/{idUsuario}")
+    public void saveOrUpdate(@PathVariable("idUsuario")int idUsuario)
+    {
+        userService.delete(idUsuario);
     }
 
 }

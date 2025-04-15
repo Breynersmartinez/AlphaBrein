@@ -31,10 +31,7 @@
 	</properties>
 	<dependencies>
 
-		<dependency>
-			<groupId>org.hibernate.validator</groupId>
-			<artifactId>hibernate-validator</artifactId>
-		</dependency>
+
 
 		<dependency>
 			<groupId>com.mysql</groupId>
@@ -43,11 +40,12 @@
 		</dependency>
 
 
-		<!--Dependencia de spring security-->
+		<!--Dependencia de spring security
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
+		-->
 
 		<!--4. Documentación de la API
  Swagger o OpenAPI para generar documentación automáticamente.-->

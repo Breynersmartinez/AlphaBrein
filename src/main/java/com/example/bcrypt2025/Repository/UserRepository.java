@@ -12,6 +12,5 @@ import org.springframework.stereotype.Repository;
 * No se ven directamente los métodos porque JpaRepository es una interfaz genérica que hereda métodos de otras interfaces.
 */
 
-public interface UserRepository extends JpaRepository<User, Integer  > {
-
+public interface UserRepository extends JpaRepository<User, Integer> {
 }
