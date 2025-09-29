@@ -7,12 +7,11 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file bcrypt2025-springboot/Dockerfile --tag my-image-name:$(date +%s)
+
+    - name: Build Docker image from subdirectory
+      run: docker build bcrypt2025-springboot --file bcrypt2025-springboot/Dockerfile --tag my-image-name:$(date +%s)
