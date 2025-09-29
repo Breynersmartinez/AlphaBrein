@@ -9,7 +9,7 @@ WORKDIR /app
 COPY . .
 
 # Da permisos de ejecución al wrapper (por si acaso)
-RUN chmod +x mvnw
+#RUN chmod +x mvnw
 
 # Se empaqueta la aplicación sin ejecutar tests
 RUN ./mvnw clean package -DskipTests
