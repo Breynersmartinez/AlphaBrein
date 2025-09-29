@@ -21,3 +21,5 @@ Authentication system with Spring Boot, MySQL, and bcrypt encryption.
   - Recoger datos, analizarlos estadísticamente y presentar recomendaciones.
 
 
+
+
