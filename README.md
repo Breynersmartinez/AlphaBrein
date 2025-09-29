@@ -20,3 +20,4 @@ Authentication system with Spring Boot, MySQL, and bcrypt encryption.
   - Analizar diferentes configuraciones de `salt`.
   - Recoger datos, analizarlos estadísticamente y presentar recomendaciones.
 
+
