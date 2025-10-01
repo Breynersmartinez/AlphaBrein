@@ -12,13 +12,14 @@ import java.util.List;
 
 @Service
 public class UserService {
+     private final UserRepository userRepository;
+    private final  BCryptPasswordEncoder encoder;
 
 
-    @Autowired
-
-    UserRepository userRepository;
-
-
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder encoder) {
+        this.userRepository = userRepository;
+        this.encoder = encoder;
+    }
 
     public Optional<User> getUser(int idUsuario)
     {
@@ -26,8 +27,7 @@ public class UserService {
     }
 
 
-    @Autowired
-    private BCryptPasswordEncoder encoder;
+
 
     public void save(User user) {
         user.setContraseniaUsuario(encoder.encode(user.getContraseniaUsuario()));

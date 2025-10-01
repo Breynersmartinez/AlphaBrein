@@ -12,17 +12,17 @@ import jakarta.persistence.Table;
 @Entity
 
 // Nombre de la tabla de la base de datos que esta mapeada la entidad
-@Table(name = "usuario")
-@Data
+@Table(name = "USUARIO")
 public class User {
 
     @Id
-
-    // Atributos y tablas relacionadas en la bd
-
-    @Column(name="idUsuario", unique = true, nullable = false)
+    @Column(name="ID_USUARIO", unique = true, nullable = false)
     private int idUsuario;
+
+    @Column(name = "NOMBRE_USUARIO")
     private  String nombreUsuario;
+
+    @Column(name = "CONTRASENIA_USUARIO")
     private String contraseniaUsuario;
 
 

@@ -20,10 +20,12 @@ import java.util.Optional;
 public class UserController {
 
 
-    @Autowired
-    private UserService userService;
 
+    private final UserService userService;
 
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/{idUsuario}")
     public Optional<User> getById(@PathVariable("idUsuario") int idUsuario) {
@@ -32,17 +34,34 @@ public class UserController {
 
 
     @PostMapping
-    public void getAll(@RequestBody User user)
+    public ResponseEntity<?> getAll(@RequestBody User user)
     {
-        userService.save(user);
+        try
+        {
+            userService.save(user);
+            return ResponseEntity.ok( " Usuario creado ");
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
     }
 
 
     @PutMapping("/{idUsuario}")
     public ResponseEntity<?> updateUser(@PathVariable("idUsuario") int idUsuario, @RequestBody User user) {
-        user.setIdUsuario(idUsuario); // Asegura que el ID esté bien asignado
-        userService.Update(user);
-        return ResponseEntity.ok("Usuario actualizado");
+
+        try
+        {
+            user.setIdUsuario(idUsuario); // Asegura que el ID esté bien asignado
+            userService.Update(user);
+            return ResponseEntity.ok("Usuario actualizado");
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
 
