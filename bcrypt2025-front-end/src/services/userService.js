@@ -1,19 +1,21 @@
-const API_URL = import.meta.env.VITE_API_URL;
+import { API_URL } from '../config/api';
 
-export const userAPI = {
-  login: async (credentials) => {
+
+
+export const userService = {
+  async login(idUsuario, contraseniaUsuario) {
     const response = await fetch(`${API_URL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        idUsuario: parseInt(credentials.idUsuario),
-        contraseniaUsuario: credentials.contraseniaUsuario
+        idUsuario: parseInt(idUsuario),
+        contraseniaUsuario
       })
     });
     return response;
   },
-  
-  register: async (userData) => {
+
+  async register(userData) {
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -25,15 +27,18 @@ export const userAPI = {
     });
     return response;
   },
-  
-  getUser: async (id) => {
-    const response = await fetch(`${API_URL}/${id}`);
-    return response.ok ? await response.json() : null;
+
+  async getUserById(idUsuario) {
+    const response = await fetch(`${API_URL}/${idUsuario}`);
+    if (response.ok) {
+      return await response.json();
+    }
+    throw new Error('Usuario no encontrado');
   },
-  
-  createUser: async (userData) => {
-    await fetch(API_URL, {
-      method: 'POST',
+
+  async updateUser(userData) {
+    const response = await fetch(`${API_URL}/${userData.idUsuario}`, {
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         idUsuario: parseInt(userData.idUsuario),
@@ -41,19 +46,13 @@ export const userAPI = {
         contraseniaUsuario: userData.contraseniaUsuario
       })
     });
+    return response;
   },
-  
-  updateUser: async (id, userData) => {
-    await fetch(`${API_URL}/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData)
+
+  async deleteUser(idUsuario) {
+    const response = await fetch(`${API_URL}/${idUsuario}`, {
+      method: 'DELETE'
     });
-  },
-  
-  deleteUser: async (id) => {
-    await fetch(`${API_URL}/${id}`, { 
-      method: 'DELETE' 
-    });
+    return response;
   }
 };
