@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/usuarios")
-@CrossOrigin(origins = "*") // acepta desde cualquier dominio
+@CrossOrigin(origins = "*, https://bcrypt2025-springboot.vercel.app/") // acepta desde cualquier dominio
 public class UserController {
 
 
