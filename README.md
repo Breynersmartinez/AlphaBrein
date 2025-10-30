@@ -1,4 +1,4 @@
-# bcrypt2025-springboot
+# AlphaBrein
 Authentication system with Spring Boot, MySQL, and bcrypt encryption.
 
 ###  **"Evaluación del rendimiento del algoritmo bcrypt en la derivación de contraseñas de usuario utilizando una base de datos MySQL durante el proceso de login para descubrir su comportamiento al aplicar distintos parámetros 'salt'."**
