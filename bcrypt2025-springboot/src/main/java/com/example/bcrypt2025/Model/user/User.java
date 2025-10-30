@@ -2,6 +2,7 @@ package com.example.bcrypt2025.model.user;
 
 import com.example.bcrypt2025.audit.Auditable;
 
+
 import com.example.bcrypt2025.model.enums.IdentificationType;
 import com.example.bcrypt2025.model.enums.Role;
 import jakarta.persistence.*;
@@ -79,6 +80,7 @@ public class User extends Auditable<User> implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
+
 
 
     //getters and setters
@@ -199,7 +201,6 @@ public class User extends Auditable<User> implements UserDetails {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-
 
 
 
