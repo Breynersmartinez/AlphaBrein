@@ -1,17 +1,19 @@
-package com.example.bcrypt2025.Repository;
+package com.example.bcrypt2025.repository;
+
+import com.example.bcrypt2025.model.user.User;
 
 
-import com.example.bcrypt2025.Model.User;
+import com.example.bcrypt2025.model.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
-/*
-* Para ver los metodos abstractos que se heredan de JpaRepository presione la tecla CONTROL+ Click derecho.
-* No se ven directamente los métodos porque JpaRepository es una interfaz genérica que hereda métodos de otras interfaces.
-*/
-
 public interface UserRepository extends JpaRepository<User, Integer> {
-
+    Optional<User> findByEmail(String email);
+    List<User> findByActive(Boolean active);
+    List<User> findByRole(Role role);
 }

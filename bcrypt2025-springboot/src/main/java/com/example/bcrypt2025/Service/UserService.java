@@ -1,79 +1,157 @@
-package com.example.bcrypt2025.Service;
+package com.example.bcrypt2025.service;
 
 
-import com.example.bcrypt2025.Model.User;
-import com.example.bcrypt2025.Repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import com.example.bcrypt2025.dto.userDTO.UpdateUserRequest;
+import com.example.bcrypt2025.dto.userDTO.UserResponse;
+
+import com.example.bcrypt2025.model.user.User;
+import com.example.bcrypt2025.model.enums.Role;
+import com.example.bcrypt2025.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+
 public class UserService {
-     private final UserRepository userRepository;
-    private final  BCryptPasswordEncoder encoder;
 
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder encoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.encoder = encoder;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    public Optional<User> getUser(int idUsuario)
-    {
-        return userRepository.findById(idUsuario);
+    // Obtener todos los usuarios
+    public List<UserResponse> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
     }
 
-
-
-
-    public void save(User user) {
-        user.setContraseniaUsuario(encoder.encode(user.getContraseniaUsuario()));
-        userRepository.save(user);
+    // Obtener usuario por ID
+    public UserResponse getUserById(Integer idCard) {
+        User user = userRepository.findById(idCard)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + idCard));
+        return convertToResponse(user);
     }
 
+    // Obtener usuario por email
+    public UserResponse getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + email));
+        return convertToResponse(user);
+    }
 
+    // Actualizar usuario
+    @Transactional
+    public UserResponse updateUser(Integer idCard, UpdateUserRequest request) {
+        User user = userRepository.findById(idCard)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + idCard));
 
-    public void Update(User user) {
-        Optional<User> existingUser = userRepository.findById(user.getIdUsuario());
-
-        if (existingUser.isPresent()) {
-            User userFromDb = existingUser.get();
-
-            // Actualizar el nombre de usuario si cambió
-            userFromDb.setNombreUsuario(user.getNombreUsuario());
-
-            // Verificar si la contraseña fue cambiada antes de volver a codificarla
-            String nuevaContrasenia = user.getContraseniaUsuario();
-            if (!encoder.matches(nuevaContrasenia, userFromDb.getContraseniaUsuario())) {
-                userFromDb.setContraseniaUsuario(encoder.encode(nuevaContrasenia));
-            }
-
-            userRepository.save(userFromDb);
-        } else {
-            // Si no existe, crear uno nuevo con la contraseña codificada
-            user.setContraseniaUsuario(encoder.encode(user.getContraseniaUsuario()));
-            userRepository.save(user);
+        // Actualizar solo los campos que no son nulos
+        if (request.getFirstName() != null && !request.getFirstName().isEmpty()) {
+            user.setFirstName(request.getFirstName());
         }
-    }
 
-
-    public void delete( int idUsuario)
-    {
-        userRepository.deleteById(idUsuario);
-    }
-
-
-
-    //Login
-    public boolean login(int idUsuario, String rawPassword) {
-        Optional<User> optionalUser = userRepository.findById(idUsuario);
-        if (optionalUser.isPresent()) {
-            String hashedPassword = optionalUser.get().getContraseniaUsuario();
-            return encoder.matches(rawPassword, hashedPassword);
+        if (request.getLastName() != null && !request.getLastName().isEmpty()) {
+            user.setLastName(request.getLastName());
         }
-        return false;
+
+        if (request.getEmail() != null && !request.getEmail().isEmpty()) {
+            // Verificar que el email no esté en uso por otro usuario
+            userRepository.findByEmail(request.getEmail())
+                    .ifPresent(existingUser -> {
+                        if (!existingUser.getIdCard().equals(idCard)) {
+                            throw new RuntimeException("El email ya está en uso");
+                        }
+                    });
+            user.setEmail(request.getEmail());
+        }
+
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+
+        if (request.getPhoneNumber() != null) {
+            user.setPhoneNumber(request.getPhoneNumber());
+        }
+
+        if (request.getDirection() != null) {
+            user.setDirection(request.getDirection());
+        }
+
+        if (request.getRole() != null) {
+            user.setRole(request.getRole());
+        }
+
+        if (request.getActive() != null) {
+            user.setActive(request.getActive());
+        }
+
+        User updatedUser = userRepository.save(user);
+        return convertToResponse(updatedUser);
+    }
+
+    // Eliminar usuario (eliminación física)
+    @Transactional
+    public void deleteUser(Integer idCard) {
+        User user = userRepository.findById(idCard)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + idCard));
+        userRepository.delete(user);
+    }
+
+    // Desactivar usuario (eliminación lógica - recomendado)
+    @Transactional
+    public UserResponse deactivateUser(Integer idCard) {
+        User user = userRepository.findById(idCard)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + idCard));
+        user.setActive(false);
+        User updatedUser = userRepository.save(user);
+        return convertToResponse(updatedUser);
+    }
+
+    // Activar usuario
+    @Transactional
+    public UserResponse activateUser(Integer idCard) {
+        User user = userRepository.findById(idCard)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + idCard));
+        user.setActive(true);
+        User updatedUser = userRepository.save(user);
+        return convertToResponse(updatedUser);
+    }
+
+    // Obtener usuarios activos
+    public List<UserResponse> getActiveUsers() {
+        return userRepository.findByActive(true).stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+
+    // Obtener usuarios por rol
+    public List<UserResponse> getUsersByRole(Role role) {
+        return userRepository.findByRole(role).stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+
+    // Convertir User a UserResponse (sin exponer la contraseña)
+    private UserResponse convertToResponse(User user) {
+        return UserResponse.builder()
+                .idCard(user.getIdCard())
+                .identificationType(user.getIdentificationType())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .direction(user.getDirection())
+                .role(user.getRole())
+                .registrationDate(user.getRegistrationDate())
+                .active(user.getActive())
+                .build();
     }
 }
