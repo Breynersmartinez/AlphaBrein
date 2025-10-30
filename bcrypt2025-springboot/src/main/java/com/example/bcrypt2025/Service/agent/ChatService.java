@@ -8,6 +8,7 @@ import com.example.bcrypt2025.model.agent.ChatSession;
 import com.example.bcrypt2025.model.user.User;
 import com.example.bcrypt2025.repository.agent.ChatMessageRepository;
 import com.example.bcrypt2025.repository.agent.ChatSessionRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
@@ -20,10 +21,14 @@ import java.util.stream.Collectors;
 @Service
 public class ChatService {
 
+    @Value("${n8n.webhook.url}")
+    private  String N8N_WEBHOOK;
+
+
     private final ChatSessionRepository chatSessionRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final RestTemplate restTemplate;
-    private static final String N8N_WEBHOOK_URL = "https://n8n-latest-fxef.onrender.com/webhook/BreinLogic";
+
 
     public ChatService(ChatSessionRepository chatSessionRepository,
                        ChatMessageRepository chatMessageRepository,
@@ -69,7 +74,7 @@ public class ChatService {
         body.put("chatInput", chatInput);
 
         try {
-            String response = restTemplate.postForObject(N8N_WEBHOOK_URL, body, String.class);
+            String response = restTemplate.postForObject(N8N_WEBHOOK, body, String.class);
 
             // Guardar respuesta del agente
             ChatMessage agentMessage = new ChatMessage(session, "AGENT", response);
