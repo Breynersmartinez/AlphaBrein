@@ -75,7 +75,7 @@ public class AuthService {
         //Envio del corrreo de confirmacion al usuario que envia el mensaje al propietario del sitio
         SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
         msg.setTo(user.getEmail());
-        msg.setSubject("¡Bienvenido al sistema de Parqueadero! "); // Asunto más claro
+        msg.setSubject("¡Bienvenido a AlphaBrein! "); // Asunto más claro
         msg.setText(
                 "Hola " + user.getFirstName() + " " + user.getLastName() + ",\n\n" +
                         "Tu registro en AlphaBrein se ha realizado con éxito.\n\n" +
