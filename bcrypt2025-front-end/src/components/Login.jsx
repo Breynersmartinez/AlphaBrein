@@ -43,8 +43,14 @@ function Login({ navigateTo }) {
         // Usar el login del contexto
         login(userData);
         
-        // El App.jsx se encargará de la redirección automáticamente
-        // basado en isAuthenticated del contexto
+        // Redirigir según el rol
+        if (data.role === 'ADMIN') {
+          navigateTo('userDashboard');
+        } else if (data.role === 'USER') {
+          navigateTo('dashboard');
+        } else {
+          navigateTo('dashboard');
+        }
       } else {
         setError(data.message || "Credenciales incorrectas. Por favor, inténtelo de nuevo.");
       }

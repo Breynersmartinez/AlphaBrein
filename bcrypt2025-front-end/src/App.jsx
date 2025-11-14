@@ -3,9 +3,10 @@ import { useAuth } from './context/AuthContext';
 import Login from './components/Login';
 import ClientSignUp from './components/ClientSignUp';
 import Dashboard from './components/Dashboard';
+import UserDashboard from './components/UserDashboard'; // Importa tu componente admin
 
 const App = () => {
-  const { isLoading, isAuthenticated } = useAuth();
+  const { isLoading, isAuthenticated, user } = useAuth();
   const [currentPage, setCurrentPage] = useState('login');
 
   const navigateTo = (page) => {
@@ -24,9 +25,13 @@ const App = () => {
     );
   }
 
-  // Si está autenticado, mostrar Dashboard
+  // Si está autenticado, mostrar Dashboard según el rol
   if (isAuthenticated) {
-    return <Dashboard navigateTo={navigateTo} />;
+    if (user?.role === 'ADMIN') {
+      return <UserDashboard navigateTo={navigateTo} />;
+    } else if (user?.role === 'USER') {
+      return <Dashboard navigateTo={navigateTo} />;
+    }
   }
 
   // Si no está autenticado, mostrar Login o SignUp
@@ -35,6 +40,10 @@ const App = () => {
       return <Login navigateTo={navigateTo} />;
     case 'clientSignUp':
       return <ClientSignUp navigateTo={navigateTo} />;
+    case 'dashboard':
+      return <Dashboard navigateTo={navigateTo} />;
+    case 'userDashboard':
+      return <UserDashboard navigateTo={navigateTo} />;
     default:
       return <Login navigateTo={navigateTo} />;
   }

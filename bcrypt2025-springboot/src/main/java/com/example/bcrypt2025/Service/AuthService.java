@@ -77,15 +77,20 @@ public class AuthService {
         msg.setTo(user.getEmail());
         msg.setSubject("¡Bienvenido al sistema de Parqueadero! "); // Asunto más claro
         msg.setText(
-                "Hola " + user.getFirstName() + ",\n\n" + user.getLastName() + ",\n\n" +
-                        "Tu registro en el sistema de parqueadero se ha realizado con éxito.\n\n" +
-                        " Fecha de registro: " + user.getRegistrationDate() + "\n" +
-                        " Usuario (email): " + user.getEmail() + "\n\n" +
+                "Hola " + user.getFirstName() + " " + user.getLastName() + ",\n\n" +
+                        "Tu registro en AlphaBrein se ha realizado con éxito.\n\n" +
+                        "Detalles de tu cuenta:\n" +
+                        "• Nombre: " + user.getFirstName() + " " + user.getLastName() + "\n" +
+                        "• Email: " + user.getEmail() + "\n" +
+                        "• Cédula: " + user.getIdCard() + "\n" +
+                        "• Fecha de registro: " + user.getRegistrationDate() + "\n\n" +
                         "Ya puedes ingresar a la plataforma con tus credenciales.\n\n" +
-                        "Si tienes dudas, comunícate con nosotros a través de nuestro WhatsApp empresarial: https://wa.me/573103212753\n\n" +
-                        "¡Gracias por confiar en nuestro servicio!\n\n" +
+                        "Si tienes preguntas o necesitas asistencia, no dudes en contactarnos:\n" +
+                        "📞 WhatsApp: https://wa.me/573103212753\n" +
+                        "📧 Email: bmtechnologicalsolutions@gmail.com\n\n" +
+                        "¡Gracias por confiar en AlphaBrein!\n\n" +
                         "Atentamente,\n" +
-                        "Equipo de Parqueadero"
+                        "Equipo AlphaBrein"
         );
 
         try {
